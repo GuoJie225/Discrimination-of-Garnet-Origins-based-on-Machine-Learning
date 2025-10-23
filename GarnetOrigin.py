@@ -131,7 +131,8 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     plt.title('Distribution of Predictions')
     st.pyplot(fig)
 elif st.session_state.uploaded_file is None:
-    st.markdown(':red [Please input your data.]')
+    st.markdown(':red[Please input your data.]')
+
 
 
 
