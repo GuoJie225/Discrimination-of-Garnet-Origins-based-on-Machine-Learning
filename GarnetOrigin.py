@@ -11,9 +11,6 @@ st.title(':blue[Discrimination of Garnet Origins based on Machine Learning :eart
 st.markdown('This web is designed to discriminate different origins (:blue[Igneous, Metamorphic and Peritectic]) of garnet by major and trace elements.')
 st.caption('Author: Guo Jie and Wang Haozheng, from Southwest Petroleum University')
 
-image = Image.open('Garnet_Image.jpg')
-st.image(image, caption='Garnets in Gneiss')
-
 st.header('1. Input your data')
 model = st.radio("Make predictions based on：", ["Major Elements", "Trace Elements"])
 
@@ -114,5 +111,6 @@ if st.button('Make predictions') and uploaded_file is not None:
     st.pyplot(fig)
 else:
     st.text('Please input your data.')
+
 
 
