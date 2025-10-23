@@ -63,16 +63,16 @@ st.divider()
 
 st.header('3. Get your results')
 
-with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\Scaler_major_model.pkl', 'rb') as f:
+with open('Scaler_major_model.pkl', 'rb') as f:
     scaler_major_model = pickle.load(f)
 
-with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\XGBoost_major_model.pkl', 'rb') as f:
+with open('XGBoost_major_model.pkl', 'rb') as f:
     xgboost_major_model = pickle.load(f)
 
-with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\Scaler_trace_model.pkl', 'rb') as f:
+with open('Scaler_trace_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
-with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\XGBoost_trace_model.pkl', 'rb') as f:
+with open('XGBoost_trace_model.pkl', 'rb') as f:
     xgboost_trace_model = pickle.load(f)
 
 @st.cache_data
@@ -114,4 +114,5 @@ if st.button('Make predictions') and uploaded_file is not None:
     st.pyplot(fig)
 else:
     st.text('Please input your data.')
+
 
