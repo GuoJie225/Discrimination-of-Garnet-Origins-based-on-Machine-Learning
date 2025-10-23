@@ -107,10 +107,10 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
             data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
         else:
             scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:10]))
-            data['prediction'] = xgboost_trace_model.predict(scaled_data)
+            data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
     else:
             st.error("Data should include the 'Sum' column")
-    data['prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
+    data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
 
     st.session_state.data = data
     st.session_state.prediction_made = True
@@ -130,8 +130,9 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     sns.countplot(data=st.session_state.data, x='prediction', hue='Sample')
     plt.title('Distribution of Predictions')
     st.pyplot(fig)
-else:
+elif st.session_state.uploaded_file is None:
     st.text('Please input your data.')
+
 
 
 
