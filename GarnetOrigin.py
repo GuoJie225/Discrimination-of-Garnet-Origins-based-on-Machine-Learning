@@ -5,7 +5,6 @@ from io import BytesIO
 import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
-from PIL import Image
 
 st.title(':blue[Discrimination of Garnet Origins based on Machine Learning :earth_asia:]')
 st.markdown('This web is designed to discriminate different origins (:blue[Igneous, Metamorphic and Peritectic]) of garnet by major and trace elements.')
@@ -20,6 +19,7 @@ if 'data' not in st.session_state:
     st.session_state.data = None
     
 global data
+    
 @st.cache_data
 def to_template_df(model):
     output = BytesIO()
@@ -51,30 +51,30 @@ st.divider()
 
 st.header('2. Upload your data')
 
-uploaded_file = st.file_uploader("Garnet composition dataset:", type=['xlsx', 'csv', 'xls'], accept_multiple_files=False)
+st.session_state.uploaded_file = st.file_uploader("Garnet composition dataset:", type=['xlsx', 'csv', 'xls'], accept_multiple_files=False)
 
-if uploaded_file is not None:
-    if uploaded_file.name.split('.')[-1] == 'xlsx':
-        data = pd.read_excel(uploaded_file)
+if st.session_state.uploaded_file is not None:
+    if st.session_state.uploaded_file.name.split('.')[-1] == 'xlsx':
+        st.session_state.data = pd.read_excel(st.session_state.uploaded_file)
     else:
-        data = pd.read_csv(uploaded_file)
+        st.session_state.data = pd.read_csv(st.session_state.uploaded_file)
 
-    st.dataframe(data)
+    st.dataframe(st.session_state.data)
 
 st.divider()
 
 st.header('3. Get your results')
 
-with open('Scaler_major_model.pkl', 'rb') as f:
+with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\Scaler_major_model.pkl', 'rb') as f:
     scaler_major_model = pickle.load(f)
 
-with open('XGBoost_major_model.pkl', 'rb') as f:
+with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\XGBoost_major_model.pkl', 'rb') as f:
     xgboost_major_model = pickle.load(f)
 
-with open('Scaler_trace_model.pkl', 'rb') as f:
+with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\Scaler_trace_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
-with open('XGBoost_trace_model.pkl', 'rb') as f:
+with open('C:\\Users\JoeyZhang\Documents\Garnet_Codes\XGBoost_trace_model.pkl', 'rb') as f:
     xgboost_trace_model = pickle.load(f)
 
 @st.cache_data
@@ -82,31 +82,31 @@ def to_result_df(model):
     output = BytesIO()
 
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        data.to_excel(writer, index=False, sheet_name='Sheet1')
+        st.session_state.data.to_excel(writer, index=False, sheet_name='Sheet1')
 
     result_df = output.getvalue()
     return result_df
 
-if st.button('Make predictions') and uploaded_file is not None:
-    data.fillna(0.001, inplace=True)
+if st.button('Make predictions') and st.session_state.uploaded_file is not None:
+    st.session_state.data.fillna(0.001, inplace=True)
     if model == "Major Elements":
-        scaled_data = scaler_major_model.transform(data.query('97.50 < Sum < 102.50').iloc[:,2:-1])
-        mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
-        data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
+        scaled_data = scaler_major_model.transform(st.session_state.data.query('97.50 < Sum < 102.50').iloc[:,2:-1])
+        mask = (st.session_state.data['Sum'] > 97.50) & (st.session_state.data['Sum'] < 102.50)
+        st.session_state.data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
     else:
-        scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:]))
-        data['prediction'] = xgboost_trace_model.predict(scaled_data)
+        scaled_data = scaler_trace_model.transform(np.log1p(st.session_state.data.iloc[:,2:]))
+        st.session_state.data['prediction'] = xgboost_trace_model.predict(scaled_data)
 
-    data['prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
+    st.session_state.data['prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
 
     result_df = to_result_df(model)
 
-    st.dataframe(data)
+    st.dataframe(st.session_state.data)
 
     st.download_button(
         label = "Download",
         data = result_df,
-        file_name = uploaded_file.name + "_Results.xlsx",
+        file_name = st.session_state.uploaded_file.name + "_Results.xlsx",
         mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
@@ -116,7 +116,3 @@ if st.button('Make predictions') and uploaded_file is not None:
     st.pyplot(fig)
 else:
     st.text('Please input your data.')
-
-
-
-
