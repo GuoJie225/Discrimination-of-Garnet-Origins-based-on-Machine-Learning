@@ -130,8 +130,9 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     sns.countplot(data=st.session_state.data, x='prediction', hue='Sample')
     plt.title('Distribution of Predictions')
     st.pyplot(fig)
-elif:
+else:
     st.text('Please input your data.')
+
 
 
 
