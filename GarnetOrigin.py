@@ -14,6 +14,11 @@ st.caption('Author: Guo Jie and Wang Haozheng, from Southwest Petroleum Universi
 st.header('1. Input your data')
 model = st.radio("Make predictions based on：", ["Major Elements", "Trace Elements"])
 
+if 'uploaded_file' not in st.session_state:
+    st.session_state.uploaded_file = None
+if 'data' not in st.session_state:
+    st.session_state.data = None
+    
 global data
 @st.cache_data
 def to_template_df(model):
@@ -111,6 +116,7 @@ if st.button('Make predictions') and uploaded_file is not None:
     st.pyplot(fig)
 else:
     st.text('Please input your data.')
+
 
 
 
