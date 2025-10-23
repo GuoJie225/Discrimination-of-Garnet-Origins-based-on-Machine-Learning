@@ -47,6 +47,7 @@ st.download_button(
     data = Template_excel,
     file_name = model + "_Input_Template.xlsx",
     mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    key="download_template_button"
 )
 
 st.divider()
@@ -122,11 +123,12 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         data = result_df,
         file_name = st.session_state.uploaded_file.name + "_Results.xlsx",
         mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        key="download_results_button_1"
     )
 
     fig = plt.figure(dpi=600)
     sns.countplot(data=st.session_state.data, x='prediction', hue='Sample')
     plt.title('Distribution of Predictions')
     st.pyplot(fig)
-elif st.button('Make predictions') and st.session_state.data is None:
+elif st.button('Make predictions', key="make_predictions_button_2") and st.session_state.data is None:
     st.text('Please input your data.')
