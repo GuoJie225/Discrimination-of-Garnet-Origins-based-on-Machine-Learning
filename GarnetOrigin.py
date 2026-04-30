@@ -6,6 +6,12 @@ import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+st.set_page_config(
+    page_title="ML-based Garnet Origins Discrimination",
+    layout="wide",  
+    initial_sidebar_state="auto"
+)
+
 st.title(':blue[Discrimination of Garnet Origins based on Machine Learning :earth_asia:]')
 st.markdown('This web is designed to discriminate different origins (:blue[Igneous, Metamorphic and Peritectic]) of garnet by major and trace elements.')
 st.caption('Author: Guo Jie and Wang Haozheng, from Southwest Petroleum University')
