@@ -33,7 +33,7 @@ def to_template_df(model):
     output = BytesIO()
     
     input_major_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
-    input_trace_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'Y', 'Zr', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Lu'])
+    input_trace_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'Y', 'Zr', 'Ce', 'Nd', 'Sm', 'Eu', 'Lu'])
     
     if model == "Major Elements":
         df = input_major_excel
@@ -113,7 +113,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         else:
             st.error("Data should include the 'Sum' column")
     else:
-        scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:10]))
+        scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:9]))
         data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
     
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
