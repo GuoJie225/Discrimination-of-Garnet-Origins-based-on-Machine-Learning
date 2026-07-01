@@ -105,17 +105,17 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data = st.session_state.data
     data.fillna(0.001, inplace=True)
 
-    if 'Sum' in data.columns:
-        if model == "Major Elements":
-
+    if model == "Major Elements":
+        if 'Sum' in data.columns:
             scaled_data = scaler_major_model.transform(data.query('97.50 < Sum < 102.50').iloc[:, 2:10])
             mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
             data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
         else:
-            scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:10]))
-            data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
-    else:
             st.error("Data should include the 'Sum' column")
+    else:
+        scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:10]))
+        data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
+    
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
 
     st.session_state.data = data
