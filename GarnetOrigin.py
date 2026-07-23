@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -80,22 +79,16 @@ st.divider()
 
 st.header('3. Get your results')
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-file_path1 = os.path.join(current_dir, 'Scaler_major_model.pkl')
-file_path2 = os.path.join(current_dir, 'Scaler_trace_model.pkl')
-file_path3 = os.path.join(current_dir, 'XGBoost_major_model.pkl')
-file_path4 = os.path.join(current_dir, 'XGBoost_trace_model.pkl')
-
-with open(file_path1, 'rb') as f:
+with open('Scaler_major_model.pkl', 'rb') as f:
     scaler_major_model = pickle.load(f)
 
-with open(file_path3, 'rb') as f:
+with open('XGBoost_major_model.pkl', 'rb') as f:
     xgboost_major_model = pickle.load(f)
 
-with open(file_path2, 'rb') as f:
+with open('Scaler_tarce_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
-with open(file_path4, 'rb') as f:
+with open('XGBoost_trace_model.pkl', 'rb') as f:
     xgboost_trace_model = pickle.load(f)
 
 @st.cache_data
