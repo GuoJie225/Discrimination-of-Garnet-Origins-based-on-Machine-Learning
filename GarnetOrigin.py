@@ -12,9 +12,9 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-st.title(':blue[Discrimination of Garnet Origins based on Machine Learning :earth_asia:]')
+st.title(':blue[基于机器学习的石榴石成因分类 :earth_asia:]')
 st.markdown('石榴石主量或微量元素区分石榴石不同成因（:blue[岩浆、变质或转熔]）')
-st.markdown('Discriminate different origins (:blue[Igneous, Metamorphic or Peritectic]) of garnet by major or trace elements.')
+st.markdown('Discriminate garnet origins (:blue[Igneous, Metamorphic or Peritectic]) with major or trace elements.')
 st.caption('作者：郭杰；王浩铮；刘恒；冯林峰；张红；翟明国；李炳春')
 st.caption('Author: Jie Guo, Haozheng Wang, Heng Liu, Linfeng Feng, Hong Zhang, Mingguo Zhai and Byung Choon Lee')
 
