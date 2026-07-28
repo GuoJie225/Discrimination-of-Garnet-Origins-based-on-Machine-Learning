@@ -127,7 +127,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     st.download_button(
         label="Download",
         data=result_df,
-        file_name=st.session_state.uploaded_file.name + "_Results.xlsx",
+        file_name=st.session_state.uploaded_file.name.split('.')[0] + "_Results.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         key="download_results_button_1"
     )
