@@ -28,7 +28,6 @@ if 'data' not in st.session_state:
 if 'prediction_made' not in st.session_state:
     st.session_state.prediction_made = False
 
-global data
     
 @st.cache_data
 def to_template_df(model):
@@ -87,19 +86,18 @@ with open('Scaler_major_model.pkl', 'rb') as f:
 with open('XGBoost_major_model.pkl', 'rb') as f:
     xgboost_major_model = pickle.load(f)
 
-with open('Scaler_tarce_model.pkl', 'rb') as f:
+with open('Scaler_trace_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
 with open('XGBoost_trace_model.pkl', 'rb') as f:
     xgboost_trace_model = pickle.load(f)
 
-@st.cache_data
-def to_result_df(model):
+def to_result_df(data, model):
     output = BytesIO()
-
+    
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        st.session_state.data.to_excel(writer, index=False, sheet_name='Sheet1')
-
+        data.to_excel(writer, index=False, sheet_name='Sheet1')
+    
     result_df = output.getvalue()
     return result_df
 
@@ -125,12 +123,12 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
 
     st.dataframe(data)
 
-    result_df = to_result_df(model)
+    result_df = to_result_df(data, model)
     st.download_button(
-        label = "Download",
-        data = result_df,
-        file_name = st.session_state.uploaded_file.name + "_Results.xlsx",
-        mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        label="Download",
+        data=result_df,
+        file_name=st.session_state.uploaded_file.name + "_Results.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         key="download_results_button_1"
     )
 
