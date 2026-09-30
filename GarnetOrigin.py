@@ -142,29 +142,29 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         key="download_results_button_1"
     )
 
-samples = st.session_state.data['Sample'].unique()
-n = len(samples)
+    samples = st.session_state.data['Sample'].unique()
+    n = len(samples)
 
-ncols = 4                        
-nrows = math.ceil(n / ncols)     
+    ncols = 4                        
+    nrows = math.ceil(n / ncols)     
 
-fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 4 * nrows), dpi=900)
-axes = axes.flatten()            
+    fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 4 * nrows), dpi=900)
+    axes = axes.flatten()            
 
-for i, sample in enumerate(samples):
-    ax = axes[i]
-    sub = st.session_state.data[st.session_state.data['Sample'] == sample]
-    counts = sub['prediction'].value_counts()
-    wedges, _, _ = ax.pie(counts, labels=None, autopct='%1.1f%%', startangle=90, textprops={'fontsize': 8})
-    ax.set_title(f'Sample: {sample}', fontsize=10)
-    ax.legend(wedges, counts.index, loc='upper center', bbox_to_anchor=(0.5, -0.05), fontsize=7)
-    ax.axis('equal')
+    for i, sample in enumerate(samples):
+        ax = axes[i]
+        sub = st.session_state.data[st.session_state.data['Sample'] == sample]
+        counts = sub['prediction'].value_counts()
+        wedges, _, _ = ax.pie(counts, labels=None, autopct='%1.1f%%', startangle=90, textprops={'fontsize': 8})
+        ax.set_title(f'Sample: {sample}', fontsize=10)
+        ax.legend(wedges, counts.index, loc='upper center', bbox_to_anchor=(0.5, -0.05), fontsize=7)
+        ax.axis('equal')
 
-for j in range(n, len(axes)):
-    fig.delaxes(axes[j])
+    for j in range(n, len(axes)):
+        fig.delaxes(axes[j])
 
-plt.tight_layout()
-st.pyplot(fig, use_container_width=False)
+    plt.tight_layout()
+    st.pyplot(fig, use_container_width=False)
 
 elif st.session_state.uploaded_file is None:
     st.markdown(':red[Please input your data.]')
