@@ -113,7 +113,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         else:
             st.error("Data should include the 'Sum' column")
     else:
-        scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:9]))
+        scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
         data.loc[:, 'prediction'] = Adaboost_trace_model.predict(scaled_data)
     
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
