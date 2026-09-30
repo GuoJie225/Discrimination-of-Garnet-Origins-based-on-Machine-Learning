@@ -6,7 +6,8 @@ import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-plt.rcParams['font.sans-serif'] = ['SimHei']  
+plt.font_manager.fontManager.addfont('simhei.ttf')
+plt.rcParams['font.sans-serif'] = ['simhei']  
 
 st.set_page_config(
     page_title="ML-based Garnet Origins Discrimination",
