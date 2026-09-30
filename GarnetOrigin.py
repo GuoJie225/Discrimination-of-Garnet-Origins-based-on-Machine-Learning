@@ -141,7 +141,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         key="download_results_button_1"
     )
 
-    fig, axes = plt.subplots(1, st.session_state.data['Sample'].nunique(), dpi=900, figsize=(4 * st.session_state.data['Sample'].nunique(), 4))
+    fig, axes = plt.subplots(1, st.session_state.data['Sample'].nunique(), dpi=150, figsize=(4 * st.session_state.data['Sample'].nunique(), 4))
 
     for ax, (sample, sub) in zip(axes, st.session_state.data.groupby('Sample')):
         counts = sub['prediction'].value_counts()
