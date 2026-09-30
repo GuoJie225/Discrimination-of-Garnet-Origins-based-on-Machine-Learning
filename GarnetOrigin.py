@@ -5,9 +5,14 @@ from io import BytesIO
 import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
-plt.font_manager.fontManager.addfont('simhei.ttf')
-plt.rcParams['font.sans-serif'] = ['simhei']  
+FONT_PATH = os.path.join(os.path.dirname(__file__), 'simhei.ttf')
+
+font_manager.fontManager.addfont(FONT_PATH)
+prop = font_manager.FontProperties(fname=FONT_PATH)
+
+plt.rcParams['font.sans-serif'] = [prop.get_name()]
 
 st.set_page_config(
     page_title="ML-based Garnet Origins Discrimination",
@@ -147,11 +152,3 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     st.pyplot(fig)
 elif st.session_state.uploaded_file is None:
     st.markdown(':red[Please input your data.]')
-
-
-
-
-
-
-
-
