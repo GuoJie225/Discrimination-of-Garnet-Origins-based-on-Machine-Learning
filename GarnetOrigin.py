@@ -34,7 +34,7 @@ def to_template_df(model):
     output = BytesIO()
     
     input_major_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
-    input_trace_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'Y', 'Zr', 'Ce', 'Nd', 'Sm', 'Eu', 'Lu'])
+    input_trace_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'Zr', 'Eu', 'Tb', 'Ce', '(Gd/Yb)N', 'Dy', 'Sm'])
     
     if model == "Major Elements":
         df = input_major_excel
@@ -89,8 +89,8 @@ with open('XGBoost_major_model.pkl', 'rb') as f:
 with open('Scaler_trace_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
-with open('XGBoost_trace_model.pkl', 'rb') as f:
-    xgboost_trace_model = pickle.load(f)
+with open('Adaboost_trace_model.pkl', 'rb') as f:
+    Adaboost_trace_model = pickle.load(f)
 
 def to_result_df(data, model):
     output = BytesIO()
@@ -114,7 +114,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
             st.error("Data should include the 'Sum' column")
     else:
         scaled_data = scaler_trace_model.transform(np.log1p(data.iloc[:,2:9]))
-        data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
+        data.loc[:, 'prediction'] = Adaboost_trace_model.predict(scaled_data)
     
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
 
