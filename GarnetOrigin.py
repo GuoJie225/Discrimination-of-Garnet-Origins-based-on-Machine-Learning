@@ -155,11 +155,9 @@ for i, sample in enumerate(samples):
     ax = axes[i]
     sub = st.session_state.data[st.session_state.data['Sample'] == sample]
     counts = sub['prediction'].value_counts()
-    wedges, _, _ = ax.pie(counts, labels=None, autopct='%1.1f%%',
-                          startangle=90, textprops={'fontsize': 8})
+    wedges, _, _ = ax.pie(counts, labels=None, autopct='%1.1f%%', startangle=90, textprops={'fontsize': 8})
     ax.set_title(f'Sample: {sample}', fontsize=10)
-    ax.legend(wedges, counts.index, loc='upper center',
-              bbox_to_anchor=(0.5, -0.05), fontsize=7)
+    ax.legend(wedges, counts.index, loc='upper center', bbox_to_anchor=(0.5, -0.05), fontsize=7)
     ax.axis('equal')
 
 for j in range(n, len(axes)):
