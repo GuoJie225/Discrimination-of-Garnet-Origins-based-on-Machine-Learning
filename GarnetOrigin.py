@@ -6,6 +6,8 @@ import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+plt.rcParams['font.sans-serif'] = ['SimHei']  
+
 st.set_page_config(
     page_title="ML-based Garnet Origins Discrimination",
     layout="wide",  
@@ -132,9 +134,15 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         key="download_results_button_1"
     )
 
-    fig = plt.figure(dpi=900)
-    sns.countplot(data=st.session_state.data, x='prediction', hue='Sample')
-    plt.title('Distribution of Predictions')
+    fig, axes = plt.subplots(1, st.session_state.data['Sample'].nunique(), dpi=900, figsize=(4 * st.session_state.data['Sample'].nunique(), 4))
+
+    for ax, (sample, sub) in zip(axes, st.session_state.data.groupby('Sample')):
+        counts = sub['prediction'].value_counts()
+        ax.pie(counts, labels=counts.index, autopct='%1.1f%%', startangle=90)
+        ax.set_title(f'Sample: {sample}')
+        ax.axis('equal')
+
+    plt.suptitle('Distribution of Predictions')
     st.pyplot(fig)
 elif st.session_state.uploaded_file is None:
     st.markdown(':red[Please input your data.]')
