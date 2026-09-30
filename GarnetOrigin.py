@@ -132,7 +132,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         key="download_results_button_1"
     )
 
-    fig = plt.figure(dpi=600)
+    fig = plt.figure(dpi=900)
     sns.countplot(data=st.session_state.data, x='prediction', hue='Sample')
     plt.title('Distribution of Predictions')
     st.pyplot(fig)
