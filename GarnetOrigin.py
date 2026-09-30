@@ -9,6 +9,7 @@ import os
 
 FONT_PATH = os.path.join(os.path.dirname(__file__), 'simhei.ttf')
 
+from matplotlib import font_manager
 font_manager.fontManager.addfont(FONT_PATH)
 prop = font_manager.FontProperties(fname=FONT_PATH)
 
