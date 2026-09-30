@@ -6,6 +6,7 @@ import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import math
 
 FONT_PATH = os.path.join(os.path.dirname(__file__), 'simhei.ttf')
 
@@ -141,16 +142,31 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         key="download_results_button_1"
     )
 
-    fig, axes = plt.subplots(1, st.session_state.data['Sample'].nunique(), dpi=600, figsize=(4 * st.session_state.data['Sample'].nunique(), 4))
+samples = st.session_state.data['Sample'].unique()
+n = len(samples)
 
-    for ax, (sample, sub) in zip(axes, st.session_state.data.groupby('Sample')):
-        counts = sub['prediction'].value_counts()
-        ax.pie(counts, labels=counts.index, autopct='%1.1f%%', startangle=90)
-        ax.set_title(f'Sample: {sample}')
-        ax.axis('equal')
+ncols = 4                        
+nrows = math.ceil(n / ncols)     
 
-    plt.suptitle('Distribution of Predictions')
-    plt.tight_layout()
-    st.pyplot(fig, use_container_width=False)
+fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 4 * nrows), dpi=900)
+axes = axes.flatten()            
+
+for i, sample in enumerate(samples):
+    ax = axes[i]
+    sub = st.session_state.data[st.session_state.data['Sample'] == sample]
+    counts = sub['prediction'].value_counts()
+    wedges, _, _ = ax.pie(counts, labels=None, autopct='%1.1f%%',
+                          startangle=90, textprops={'fontsize': 8})
+    ax.set_title(f'Sample: {sample}', fontsize=10)
+    ax.legend(wedges, counts.index, loc='upper center',
+              bbox_to_anchor=(0.5, -0.05), fontsize=7)
+    ax.axis('equal')
+
+for j in range(n, len(axes)):
+    fig.delaxes(axes[j])
+
+plt.tight_layout()
+st.pyplot(fig, use_container_width=False)
+
 elif st.session_state.uploaded_file is None:
     st.markdown(':red[Please input your data.]')
