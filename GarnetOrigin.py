@@ -135,11 +135,10 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         
         scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
         data.loc[:, 'prediction'] = Adaboost_trace_model.predict(scaled_data)
-        data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
-
+    
+    data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
     st.session_state.data = data
     st.session_state.prediction_made = True
-
     st.dataframe(data)
 
     result_df = to_result_df(data, model)
