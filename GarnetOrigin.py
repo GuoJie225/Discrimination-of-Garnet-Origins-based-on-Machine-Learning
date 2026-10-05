@@ -27,6 +27,10 @@ st.markdown('利用石榴石主量或微量元素区分石榴石不同成因（:
 st.markdown('Discriminate garnet origins (:blue[Igneous, Metamorphic or Peritectic]) with major or trace elements.')
 st.caption('作者：郭杰；王浩铮；刘恒；冯林峰；张红；翟明国；李炳春')
 st.caption('Author: Jie Guo, Haozheng Wang, Heng Liu, Linfeng Feng, Hong Zhang, Mingguo Zhai and Byung Choon Lee')
+st.caption('功能: (1) 提供标准化数据输入模板，规范数据格式; \t(2) 上传石榴子石主量元素或微量元素数据Excel文件; \t(3) 调用机器学习模型对样品进行成因预测')
+st.caption('Functions:(1) Provides standardized data entry templates to ensure consistent data formatting;\t(2) Uploads Excel files containing data on major or trace elements in garnet;\t(3) Uses machine learning models to predict the origin of samples')
+
+Translated with DeepL.com (free version)')
 
 st.header('1. Input your data')
 model = st.radio("Make predictions based on：", ["Major Elements", "Trace Elements"])
@@ -43,8 +47,8 @@ if 'prediction_made' not in st.session_state:
 def to_template_df(model):
     output = BytesIO()
     
-    input_major_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
-    input_trace_excel = pd.DataFrame(columns=['Grain_no', 'Sample', 'Zr', 'Eu', 'Tb', 'Ce', '(Gd/Yb)N', 'Dy', 'Sm'])
+    input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
+    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'Eu', 'Tb', 'Ce', 'Gd', 'Yb', 'Dy', 'Sm'])
     
     if model == "Major Elements":
         df = input_major_excel
@@ -62,7 +66,7 @@ Template_excel = to_template_df(model)
 st.download_button(
     label = "Download Template",
     data = Template_excel,
-    file_name = model + "_Input_Template.xlsx",
+    file_name = model + "_template.xlsx",
     mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     key="download_template_button"
 )
@@ -116,6 +120,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data.fillna(0.001, inplace=True)
 
     if model == "Major Elements":
+        data.fillna(0.001, inplace=True)
         if 'Sum' in data.columns:
             scaled_data = scaler_major_model.transform(data.query('97.50 < Sum < 102.50').iloc[:, 2:10])
             mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
@@ -123,10 +128,17 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         else:
             st.error("Data should include the 'Sum' column")
     else:
+        Gd = data.columns[6]
+        Yb = data.columns[7]
+        result = (data[Gd] / data[Yb].replace(0, np.nan)).where(data[Gd].notna() & data[Yb].notna())
+        data.insert(loc=8, column='(Gd/Yb)N', value=result)
+        data.drop(columns=[Gd, Yb], inplace=True)
+        data.fillna(0.001, inplace=True)
+        
         scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
         data.loc[:, 'prediction'] = Adaboost_trace_model.predict(scaled_data)
     
-    data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
+            data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
 
     st.session_state.data = data
     st.session_state.prediction_made = True
