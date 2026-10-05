@@ -128,7 +128,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     else:
         Gd = data.columns[6]
         Yb = data.columns[7]
-        result = (data[Gd] / data[Yb].replace(0, np.nan)).where(data[Gd].notna() & data[Yb].notna())
+        result = ((data[Gd]/0.2055) / (data[Yb].replace(0, np.nan)/0.170)).where(data[Gd].notna() & data[Yb].notna())
         data.insert(loc=8, column='(Gd/Yb)N', value=result)
         data.drop(columns=[Gd, Yb], inplace=True)
         data.fillna(0.001, inplace=True)
