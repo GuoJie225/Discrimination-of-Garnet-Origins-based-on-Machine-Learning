@@ -46,7 +46,7 @@ def to_template_df(model):
     output = BytesIO()
     
     input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
-    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'Eu', 'Tb', 'Ce', 'Gd', 'Yb', 'Dy', 'Sm'])
+    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'Eu', 'Tb', 'Ce', 'Er', 'Tm', 'La'])
     
     if model == "Major Elements":
         df = input_major_excel
@@ -115,7 +115,6 @@ def to_result_df(data, model):
 
 if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data = st.session_state.data
-    data.fillna(0.001, inplace=True)
 
     if model == "Major Elements":
         data.fillna(0.001, inplace=True)
@@ -126,13 +125,6 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         else:
             st.error("Data should include the 'Sum' column")
     else:
-        Gd = data.columns[6]
-        Yb = data.columns[7]
-        result = ((data[Gd]/0.2055) / (data[Yb].replace(0, np.nan)/0.170)).where(data[Gd].notna() & data[Yb].notna())
-        data.insert(loc=8, column='(Gd/Yb)N', value=result)
-        data.drop(columns=[Gd, Yb], inplace=True)
-        data.fillna(0.001, inplace=True)
-        
         scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
         data.loc[:, 'prediction'] = Adaboost_trace_model.predict(scaled_data)
     
