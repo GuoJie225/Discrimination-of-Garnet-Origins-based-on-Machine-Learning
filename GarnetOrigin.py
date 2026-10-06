@@ -101,7 +101,7 @@ with open('XGBoost_major_model.pkl', 'rb') as f:
 with open('Scaler_trace_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
-with open('Adaboost_trace_model.pkl', 'rb') as f:
+with open('XGBoost_trace_model.pkl', 'rb') as f:
     Adaboost_trace_model = pickle.load(f)
 
 def to_result_df(data, model):
