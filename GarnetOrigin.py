@@ -102,7 +102,7 @@ with open('Scaler_trace_model.pkl', 'rb') as f:
     scaler_trace_model = pickle.load(f)
 
 with open('XGBoost_trace_model.pkl', 'rb') as f:
-    Adaboost_trace_model = pickle.load(f)
+    xgboost_trace_model = pickle.load(f)
 
 def to_result_df(data, model):
     output = BytesIO()
@@ -126,7 +126,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
             st.error("Data should include the 'Sum' column")
     else:
         scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
-        data.loc[:, 'prediction'] = Adaboost_trace_model.predict(scaled_data)
+        data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
     
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
     st.session_state.data = data
