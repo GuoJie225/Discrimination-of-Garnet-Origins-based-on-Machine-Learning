@@ -115,7 +115,7 @@ def to_result_df(data, model):
 
 if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data = st.session_state.data
-    data.fillna(0.001, inplace=True)
+    data.iloc[:,2:].fillna(0.001, inplace=True)
     
     if model == "Major Elements":
         if 'Sum' in data.columns:
