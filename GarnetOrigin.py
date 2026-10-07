@@ -118,7 +118,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     
     if model == "Major Elements":
         if 'Sum' in data.columns:
-            data.iloc[:, 2:9] = data.iloc[:, 2:10].fillna(0.001)
+            data.iloc[:, 2:10] = data.iloc[:, 2:10].fillna(0.001)
             scaled_data = scaler_major_model.transform(data.query('97.50 < Sum < 102.50').iloc[:, 2:10])
             mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
             data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
