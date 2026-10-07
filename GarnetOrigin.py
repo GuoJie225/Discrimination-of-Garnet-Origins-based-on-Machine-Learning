@@ -115,16 +115,17 @@ def to_result_df(data, model):
 
 if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data = st.session_state.data
-    data.iloc[:,2:].fillna(0.001, inplace=True)
     
     if model == "Major Elements":
         if 'Sum' in data.columns:
+            data.iloc[:, 2:10].fillna(0.001, inplace=True)
             scaled_data = scaler_major_model.transform(data.query('97.50 < Sum < 102.50').iloc[:, 2:10])
             mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
             data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
         else:
             st.error("Data should include the 'Sum' column")
     else:
+        data.iloc[:, 2:9].fillna(0.001, inplace=True)
         scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
         data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
     
