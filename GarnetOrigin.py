@@ -115,9 +115,9 @@ def to_result_df(data, model):
 
 if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data = st.session_state.data
-
+    data.fillna(0.001, inplace=True)
+    
     if model == "Major Elements":
-        data.fillna(0.001, inplace=True)
         if 'Sum' in data.columns:
             scaled_data = scaler_major_model.transform(data.query('97.50 < Sum < 102.50').iloc[:, 2:10])
             mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
