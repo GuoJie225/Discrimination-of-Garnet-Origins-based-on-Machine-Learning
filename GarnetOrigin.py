@@ -117,10 +117,9 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     data = st.session_state.data
     
     if model == "Major Elements":
-        if 'Sum' in data.columns:
-            row_sum = data.iloc[:, 2:10].sum(axis=1)
-            scaled_data = scaler_major_model.transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10].fillna(0.001))
-            data.loc[row_sum.between(97.5, 102.5), 'prediction'] = xgboost_major_model.predict(scaled_data)
+        row_sum = data.iloc[:, 2:10].sum(axis=1)
+        scaled_data = scaler_major_model.transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10].fillna(0.001))
+        data.loc[row_sum.between(97.5, 102.5), 'prediction'] = xgboost_major_model.predict(scaled_data)
     else:
         data['(Gd/Yb)N'] = np.nan
         data['δEu'] = np.nan
