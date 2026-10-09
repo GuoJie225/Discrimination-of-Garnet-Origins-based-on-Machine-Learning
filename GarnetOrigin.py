@@ -45,7 +45,7 @@ if 'prediction_made' not in st.session_state:
 def to_template_df(model):
     output = BytesIO()
     
-    input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
+    input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO'])
     input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'La', 'Pr', 'Sm', 'Eu', 'Gd', 'Tb', 'Yb', 'Lu', 'Hf'])
     
     if model == "Major Elements":
@@ -118,11 +118,9 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     
     if model == "Major Elements":
         if 'Sum' in data.columns:
-            scaled_data = scaler_major_model.transform(data.iloc[:, 2:10].fillna(0.001).query('97.50 < Sum < 102.50').iloc[:, 2:10])
-            mask = (data['Sum'] > 97.50) & (data['Sum'] < 102.50)
-            data.loc[mask, 'prediction'] = xgboost_major_model.predict(scaled_data)
-        else:
-            st.error("Data should include the 'Sum' column")
+            row_sum = data.iloc[:, 2:10].sum(axis=1)
+            scaled_data = scaler_major_model.transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10].fillna(0.001))
+            data.loc[row_sum.between(97.5, 102.5), 'prediction'] = xgboost_major_model.predict(scaled_data)
     else:
         data['(Gd/Yb)N'] = np.nan
         data['δEu'] = np.nan
