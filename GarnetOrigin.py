@@ -46,7 +46,7 @@ def to_template_df(model):
     output = BytesIO()
     
     input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO', 'Sum'])
-    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'Eu', 'Tb', 'Ce', 'Er', 'Tm', 'La'])
+    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'La', 'Pr', 'Sm', 'Eu', 'Gd', 'Tb', 'Yb', 'Lu', 'Hf'])
     
     if model == "Major Elements":
         df = input_major_excel
@@ -125,8 +125,20 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         else:
             st.error("Data should include the 'Sum' column")
     else:
-        data.iloc[:, 2:9] = data.iloc[:, 2:9].fillna(0.001)
-        scaled_data = scaler_trace_model.transform(data.iloc[:,2:9])
+        data['(Gd/Yb)N'] = np.nan
+        data['δEu'] = np.nan
+
+        mask_gdyb = data['Gd'].notna() & data['Yb'].notna() & (data['Yb'] != 0)
+        data.loc[mask_gdyb, '(Gd/Yb)N'] = (data.loc[mask_gdyb, 'Gd']/0.2055) / (data.loc[mask_gdyb, 'Yb']/0.170)
+
+        mask_eu = data['Sm'].notna() & data['Eu'].notna() & data['Gd'].notna() & (data['Sm'] * data['Gd'] > 0)
+        data.loc[mask_eu, 'δEu'] = (data.loc[mask_eu, 'Eu']/0.058) / np.sqrt(data.loc[mask_eu, 'Sm']/0.153 * data.loc[mask_eu, 'Gd']/0.2055)
+
+        target_cols = ['Eu', 'Tb', 'Zr', 'Hf', '(Gd/Yb)N', 'δEu', 'La', 'Lu', 'Pr']
+        data.drop(columns=[c for c in data.columns if c not in target_cols], inplace=True)
+        data = data.reindex(columns=target_cols) 
+        
+        scaled_data = scaler_trace_model.transform(data.iloc[:, 2:9].fillna(0.001))
         data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
     
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
