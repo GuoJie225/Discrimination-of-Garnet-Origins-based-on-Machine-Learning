@@ -134,11 +134,11 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         mask_eu = data['Sm'].notna() & data['Eu'].notna() & data['Gd'].notna() & (data['Sm'] * data['Gd'] > 0)
         data.loc[mask_eu, 'δEu'] = (data.loc[mask_eu, 'Eu']/0.058) / np.sqrt(data.loc[mask_eu, 'Sm']/0.153 * data.loc[mask_eu, 'Gd']/0.2055)
 
-        target_cols = ['Eu', 'Tb', 'Zr', 'Hf', '(Gd/Yb)N', 'δEu', 'La', 'Lu', 'Pr']
+        target_cols = ['Sample', 'Spot', 'Eu', 'Tb', 'Zr', 'Hf', '(Gd/Yb)N', 'δEu', 'La', 'Lu', 'Pr']
         data.drop(columns=[c for c in data.columns if c not in target_cols], inplace=True)
         data = data.reindex(columns=target_cols) 
         
-        scaled_data = scaler_trace_model.transform(data.iloc[:, 2:9].fillna(0.001))
+        scaled_data = scaler_trace_model.transform(data.iloc[:, 2:11].fillna(0.001))
         data.loc[:, 'prediction'] = xgboost_trace_model.predict(scaled_data)
     
     data.loc[:, 'prediction'].replace({0:'Igneous', 1:'Metamorphic', 2:'Peritectic'}, inplace=True)
