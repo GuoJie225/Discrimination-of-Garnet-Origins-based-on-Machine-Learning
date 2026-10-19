@@ -121,7 +121,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     
     if model == "Major Elements":
         row_sum = data.iloc[:, 2:10].sum(axis=1)
-        X_imp_mean = pd.DataFrame(mean_imputer.fit_transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10]), columns=X.columns[2:10])
+        X_imp_mean = pd.DataFrame(mean_imputer.fit_transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10]), columns=data.columns[2:10])
         scaled_data = scaler_major_model.transform(X_imp_mean)
         data.loc[row_sum.between(97.5, 102.5), 'prediction'] = xgboost_major_model.predict(scaled_data)
     else:
