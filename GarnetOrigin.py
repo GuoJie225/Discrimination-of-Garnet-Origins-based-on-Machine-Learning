@@ -104,6 +104,9 @@ with open('Scaler_trace_model.pkl', 'rb') as f:
 with open('XGBoost_trace_model.pkl', 'rb') as f:
     xgboost_trace_model = pickle.load(f)
 
+with open('Mean_imputer.pkl', 'rb') as f:
+    mean_imputer = pickle.load(f)
+    
 def to_result_df(data, model):
     output = BytesIO()
     
@@ -118,7 +121,8 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
     
     if model == "Major Elements":
         row_sum = data.iloc[:, 2:10].sum(axis=1)
-        scaled_data = scaler_major_model.transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10].fillna(0.001))
+        X_imp_mean = pd.DataFrame(mean_imputer.fit_transform(data[row_sum.between(97.5, 102.5)].iloc[:, 2:10]), columns=X.columns[2:10])
+        scaled_data = scaler_major_model.transform(X_imp_mean)
         data.loc[row_sum.between(97.5, 102.5), 'prediction'] = xgboost_major_model.predict(scaled_data)
     else:
         data['(Gd/Yb)N'] = np.nan
