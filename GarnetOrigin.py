@@ -46,7 +46,7 @@ def to_template_df(model):
     output = BytesIO()
     
     input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO'])
-    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Y', 'Zr', 'La', 'Sm', 'Eu', 'Gd', 'Tb', 'Tm', 'Yb', 'Hf'])
+    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'La', 'Sm', 'Eu', 'Gd', 'Tb', 'Tm', 'Yb', 'Er'])
 
     if model == "Major Elements":
         df = input_major_excel
@@ -130,7 +130,7 @@ if st.button('Make predictions') and st.session_state.uploaded_file is not None:
         mask_eu = data['Sm'].notna() & data['Eu'].notna() & data['Gd'].notna() & (data['Sm'] * data['Gd'] > 0)
         data.loc[mask_eu, 'δEu'] = (data.loc[mask_eu, 'Eu']/0.058) / np.sqrt(data.loc[mask_eu, 'Sm']/0.153 * data.loc[mask_eu, 'Gd']/0.2055)
 
-        target_cols = ['Sample', 'Spot', 'Eu', 'Tb', 'Zr', 'Y', 'Sm', 'La', '(Gd/Yb)N', 'δEu', 'Tm']
+        target_cols = ['Sample', 'Spot', 'Eu', 'Zr', 'Tb', 'Er', 'δEu', 'La', '(Gd/Yb)N', 'Yb']
         data.drop(columns=[c for c in data.columns if c not in target_cols], inplace=True)
         data = data.reindex(columns=target_cols) 
         
