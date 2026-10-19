@@ -46,7 +46,7 @@ def to_template_df(model):
     output = BytesIO()
     
     input_major_excel = pd.DataFrame(columns=['Sample', 'Spot', 'SiO2', 'TiO2', 'Al2O3', 'Cr2O3', 'FeOT', 'MnO', 'MgO', 'CaO'])
-    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'La', 'Sm', 'Eu', 'Gd', 'Tb', 'Tm', 'Yb', 'Er'])
+    input_trace_excel = pd.DataFrame(columns=['Sample', 'Spot', 'Zr', 'La', 'Sm', 'Eu', 'Gd', 'Tb', 'Yb', 'Er'])
 
     if model == "Major Elements":
         df = input_major_excel
